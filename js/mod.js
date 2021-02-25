@@ -1,8 +1,8 @@
 let modInfo = {
-	name: "The ??? Tree",
+	name: "The Matter Tree",
 	id: "mymod",
-	author: "nobody",
-	pointsName: "points",
+	author: "EmiPiplu",
+	pointsName: "Instabilities",
 	discordName: "",
 	discordLink: "",
 	initialStartPoints: new Decimal (10), // Used for hard resets and new players
@@ -12,8 +12,8 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.0",
-	name: "Literally nothing",
+	num: "0.32",
+	name: "Oh god i broke everything",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
