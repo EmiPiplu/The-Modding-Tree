@@ -42,6 +42,14 @@ function getPointGen() {
 		return new Decimal(0)
 
 	let gain = new Decimal(1)
+	if(hasUpgrade("ss", 11)) gain = gain.mul(2)
+	if(hasUpgrade("ss", 12)) gain = gain.mul(upgradeEffect("ss", 12))
+	if(hasUpgrade("ss", 21)) gain = gain.mul(2)
+	if(hasUpgrade("ss", 22)) gain = gain.pow(1.2)
+	if(hasUpgrade("ss", 23)) gain = gain.mul(upgradeEffect("ss", 23))
+	if(hasUpgrade("ss", 33)) gain = gain.mul(2)
+	gain = gain.mul(tmp.um.effect)
+	gain = gain.mul(buyableEffect("ss", 11))
 	return gain
 }
 
