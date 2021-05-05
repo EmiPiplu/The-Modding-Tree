@@ -39,7 +39,7 @@ addLayer("f", {
         12: {
             title: "Monotheism",
             description: "Focus on one god/goddess at a time increasing divinity production ",
-            cost: new ExpantaNum(10),
+            cost: new ExpantaNum(3),
             onPurchase() {
                 player.points = player.points.sub(this.cost)
             },
