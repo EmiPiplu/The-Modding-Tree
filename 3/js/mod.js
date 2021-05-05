@@ -1,7 +1,7 @@
 let modInfo = {
-	name: "The Modding Tree",
-	id: "mymod",
-	author: "",
+	name: "The Ascension Tree",
+	id: "pleasekillmeihavenothingtodowithmylife.",
+	author: "Emi",
 	pointsName: "points",
 	discordName: "",
 	discordLink: "",
@@ -18,8 +18,8 @@ let VERSION = {
 
 let changelog = `<h1>Changelog:</h1><br>
 	<h3>v0.0</h3><br>
-		- Added things.<br>
-		- Added stuff.`
+		- Basic Mod setup<br>
+		- Removed hidden nuclear bombs from the code.`
 
 let winText = `Congratulations! You have reached the end and beaten this game, but for now...`
 
