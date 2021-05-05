@@ -2,7 +2,7 @@ let modInfo = {
 	name: "The Ascension Tree",
 	id: "pleasekillmeihavenothingtodowithmylife.",
 	author: "Emi",
-	pointsName: "points",
+	pointsName: "Divinity",
 	discordName: "",
 	discordLink: "",
 	initialStartPoints: new ExpantaNum (10), // Used for hard resets and new players
@@ -17,9 +17,13 @@ let VERSION = {
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+	<h3>v0.1</h3><br>
+		- Implemented story and first 2 upgrades.<br>
+		- Removed more nukes. 
 	<h3>v0.0</h3><br>
 		- Basic Mod setup<br>
-		- Removed hidden nuclear bombs from the code.`
+		- Removed hidden nuclear bombs from the code.<br>
+	`
 
 let winText = `Congratulations! You have reached the end and beaten this game, but for now...`
 
@@ -42,6 +46,10 @@ function getPointGen() {
 		return new ExpantaNum(0)
 
 	let gain = new ExpantaNum(1)
+	
+	if (hasUpgrade("f", 11)) gain = gain.plus(1)
+	if (hasUpgrade("f", 12)) gain = gain.mul(upgradeEffect("f", 12))
+
 	return gain
 }
 

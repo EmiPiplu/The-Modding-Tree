@@ -11,7 +11,7 @@ addLayer("L", {
 
     infoboxes: {
         story: {
-          title: "Genas",
+          title: "Ignos",
           body: `So you want to ascend and become a god? I'll teach you on one condition. the life i have created over eternity have grown quite stale and my inspiration is running low.
           create some kind of life for me. i don't care what it is just make something. You can't? Absolutely pathetic. What hope do you have of becoming a god if you can't even create 
           basic life. Go home. My time is worth more than some mortal. `
