@@ -143,9 +143,10 @@ addLayer("f", {
                 return cost
             },
             display() {
-                return `Research the light gods to increase faith by 1.5x each upgrade
+                return `Research the light gods to increase faith by 1.5x + ${upgradeEffect("f", 21)} each upgrade
                 Currently: ${format(this.effect().toFixed(3))}x
-                Cost: ${format(this.cost().toFixed(3))} Faith`
+                Cost: ${format(this.cost().toFixed(3))} Faith
+                Amount: ${getBuyableAmount("f", 11)}`
             },
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
@@ -171,9 +172,10 @@ addLayer("f", {
                 return cost
             },
             display() {
-                return `Research the dark gods to increase divinity by 2x each upgrade
+                return `Research the dark gods to increase divinity by 2x + ${upgradeEffect("f", 22)} each upgrade
                 Currently: ${format(this.effect().toFixed(3))}x
-                Cost: ${format(this.cost().toFixed(3))} Faith`
+                Cost: ${format(this.cost().toFixed(3))} Faith
+                Amount: ${getBuyableAmount("f", 12)}`
             },
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
