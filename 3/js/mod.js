@@ -12,14 +12,14 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.0",
-	name: "",
+	num: "0.3",
+	name: "Duality",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
 	<h3>v0.1</h3><br>
 		- Implemented story and first 2 upgrades.<br>
-		- Removed more nukes. 
+		- Removed more nukes.<br> 
 	<h3>v0.0</h3><br>
 		- Basic Mod setup<br>
 		- Removed hidden nuclear bombs from the code.<br>
@@ -49,6 +49,8 @@ function getPointGen() {
 	
 	if (hasUpgrade("f", 11)) gain = gain.plus(1)
 	if (hasUpgrade("f", 12)) gain = gain.mul(upgradeEffect("f", 12))
+	if (hasUpgrade("f", 14)) gain = gain.mul(upgradeEffect("f", 14))
+	gain = gain.mul(buyableEffect("f", 12))
 
 	return gain
 }
