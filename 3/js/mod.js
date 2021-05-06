@@ -17,6 +17,13 @@ let VERSION = {
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+	<h3>v0.3</h3><br>
+	- More Upgrades.<br>
+	- There is actually something to do now.<br>
+	- Threw challenges to the shark pits for being annoying<br>
+	<h3>v0.2</h3><br>
+	- More Upgrades.<br>
+	- Banished infinity to another dimension for breaking the game.<br>
 	<h3>v0.1</h3><br>
 		- Implemented story and first 2 upgrades.<br>
 		- Removed more nukes.<br> 
