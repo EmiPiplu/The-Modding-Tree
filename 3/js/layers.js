@@ -398,7 +398,8 @@ addLayer("p", {
     infoboxes: {
         Pantheon: {
           title: "Pantheon",
-          body: `With the pantheon in place the gods can interact with mortals even more by creating dreamscapes to test the abilities of those that seek their aid.`
+          body: `With the pantheon in place the gods can interact with mortals even more by creating dreamscapes to test the abilities of those that seek their aid. During and after these challanges
+          all progress will be reset until later on`
           },
     
         },
