@@ -26,13 +26,9 @@ function changeTreeQuality() {
 function toggleAuto(toggle) {
 	player[toggle[0]][toggle[1]] = !player[toggle[0]][toggle[1]];
 }
-
-const MS_DISPLAYS = ["ALL", "LAST, AUTO, INCOMPLETE", "AUTOMATION, INCOMPLETE", "INCOMPLETE", "NONE"];
-
-const MS_SETTINGS = ["always", "last", "automation", "incomplete", "never"];
-
 function adjustMSDisp() {
-	player.msDisplay = MS_SETTINGS[(MS_SETTINGS.indexOf(player.msDisplay) + 1) % 5];
+	let displays = ["always", "automation", "incomplete", "never"];
+	player.msDisplay = displays[(displays.indexOf(player.msDisplay) + 1) % 4];
 }
 function milestoneShown(layer, id) {
 	complete = player[layer].milestones.includes(id);
@@ -41,9 +37,6 @@ function milestoneShown(layer, id) {
 	switch (player.msDisplay) {
 		case "always":
 			return true;
-			break;
-		case "last":
-			return (auto) || !complete || player[layer].lastMilestone === id;
 			break;
 		case "automation":
 			return (auto) || !complete;
