@@ -63,6 +63,8 @@ addLayer("f", {
             },
             effect() { // Calculate bonuses from the upgrade. Can return a single value or an object with multiple values
                 let ret = player.f.points.sqrt().div(3).add(1)
+                if (inChallenge("p", 11) || hasChallenge("p", 11)) ret = ret.pow(1.5)
+                if (ret.gte("1e2000")) ret = "1e2000" 
                 if(ret < 1) ret = 1
                 return ret;
             },
@@ -109,6 +111,7 @@ addLayer("f", {
             effect() { // Calculate bonuses from the upgrade. Can return a single value or an object with multiple values
                 let ret = getBuyableAmount("f", 11).div(100)
                 if (ret > 1) ret = 1
+                if (!hasUpgrade("f", 21)) ret = 0
                 return ret;
             },
             effectDisplay() { return "+"+ format(this.effect()) }, 
@@ -126,6 +129,7 @@ addLayer("f", {
             effect() { // Calculate bonuses from the upgrade. Can return a single value or an object with multiple values
                 let ret = getBuyableAmount("f", 12).div(100)
                 if (ret > 1) ret = 1
+                if (!hasUpgrade("f", 22)) ret = 0
                 return ret;
             },
             effectDisplay() { return "+"+ format(this.effect()) }, 
@@ -153,6 +157,8 @@ addLayer("f", {
                 let base = new ExpantaNum(10)
                 let cost = new ExpantaNum(base).pow(getBuyableAmount(this.layer, this.id).add(1))
                 if (buyableEffect("f", 11) > 1e20) cost = cost.pow(3)
+                if (buyableEffect("f", 11) > 1e60) cost = cost.pow(3)
+                if (buyableEffect("f", 11) > 1e100) cost = cost.pow(3)
                 return cost
             },
             display() {
@@ -182,6 +188,8 @@ addLayer("f", {
                 let base = new ExpantaNum(20)
                 let cost = new ExpantaNum(base).pow(getBuyableAmount(this.layer, this.id).add(1))
                 if (buyableEffect("f", 12) > 1e20) cost = cost.pow(3)
+                if (buyableEffect("f", 12) > 1e60) cost = cost.pow(3)
+                if (buyableEffect("f", 12) > 1e100) cost = cost.pow(3)
                 return cost
             },
             display() {
@@ -243,7 +251,10 @@ addLayer("d", {
     exponent: 0.5, // Prestige currency exponent
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new ExpantaNum(1)
-        if(hasUpgrade("f", 23)) mult = mult.mul(upgradeEffect("d", 12))
+        if(hasUpgrade("d", 12)) mult = mult.mul(upgradeEffect("d", 12))
+        if(hasUpgrade("d", 12)) mult = mult.mul(2)
+        if(hasUpgrade("d", 13)) mult = mult.mul(2)
+        if(hasUpgrade("d", 14)) mult = mult.mul(3)
         return mult
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -272,7 +283,7 @@ addLayer("d", {
         cols: 5,
         11: {
             title: "Fresh Meat",
-            description: "Begin Recruiting Devotees",
+            description: "Begin Recruiting Devotees Every upgrade doubles devotee gain unless stated with a (NB).",
             cost: new ExpantaNum(0),
             onPurchase() {
                 player.points = player.d.points.sub(this.cost)
@@ -292,19 +303,34 @@ addLayer("d", {
             },
             effectDisplay() { return format(this.effect())+"x" }, 
         },
-        12: {
+        13: {
             title: "Divine Training",
-            description: "Something about divinity",
-            cost: new ExpantaNum(15),
+            description: "Instruct Devotees on the nature of each god increasing divinity.",
+            cost: new ExpantaNum(50),
             onPurchase() {
                 player.points = player.points.sub(this.cost)
             },
             effect() { // Calculate bonuses from the upgrade. Can return a single value or an object with multiple values
-                let ret = player.d.points.sqrt().add(1)
+                let ret = player.d.points.add(1)
                 if(ret < 1) ret = 1
                 return ret;
             },
             effectDisplay() { return format(this.effect())+"x" }, 
+            unlocked() {
+                return hasUpgrade("d", 12)
+            }, 
+        },
+        14: {
+            title: "Pantheon",
+            description: "Devotees build a pantheon to pray and communicate with the gods. triples devotee gain and unlocks the pantheon layer (NB)",
+            cost: new ExpantaNum(500),
+            onPurchase() {
+                player.points = player.points.sub(this.cost)
+                
+            },
+            unlocked() {
+                return hasUpgrade("d", 13)
+            }, 
         },
     },
 
@@ -314,6 +340,7 @@ addLayer("d", {
         
     },
     
+
     
     infoboxes: {
         Devotion: {
@@ -330,4 +357,57 @@ addLayer("d", {
 
     
     layerShown(){return hasUpgrade("f", 23)}
+})
+
+addLayer("p", {
+    name: "Pantheon", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "P", // This appears on the layer's node. Default is the id with the first letter capitalized
+    startData() { return {                  // startData is a function that returns default data for a layer. 
+        unlocked: true,                     // You can add more variables here to add them to your layer.
+        points: new ExpantaNum(0),             // "points" is the internal name for the main resource of the layer.
+    }},
+
+    color: "#FF0000",                       // The color for this layer, which affects many elements.
+    resource: "Completions",            // The name of this layer's main prestige resource.
+    row: 2,
+    position: 1,                                 // The row this layer is on (0 is the first row).
+
+    baseResource: "Divinity",                 // The name of the resource your prestige gain is based on.
+    baseAmount() { return player.points },  // A function to return the current amount of baseResource.
+
+    requires: new ExpantaNum(10),              // The amount of the base needed to  gain 1 of the prestige currency.
+                                            // Also the amount required to unlock the layer.
+
+    type: "normal",                         // Determines the formula used for calculating prestige currency.
+    exponent: 0.5,                          // "normal" prestige gain is (currency^exponent).
+
+    challenges: {
+        11: {
+            name: "Bruris I",
+            challengeDescription: `"After all this time you have grown quite influential. Show me your skill and i will lend you more of my power to achieve your goals." Divinity gain is square rooted
+            but during the challenge bruris's blessing is raised to the 1.5th power`,
+            goal: new ExpantaNum("1e200"),
+            rewardDescription: "Bruris's blessing buff remains outside the challenge",
+            onComplete(){
+                player.p.points = player.p.points.add(1)
+
+            },
+        },
+    },
+
+    infoboxes: {
+        Pantheon: {
+          title: "Pantheon",
+          body: `With the pantheon in place the gods can interact with mortals even more by creating dreamscapes to test the abilities of those that seek their aid.`
+          },
+    
+        },
+
+    tabFormat: {
+        "Pantheon": { content: [["infobox", "Pantheon",], "milestones", "challenges"] },
+    },
+
+
+
+    layerShown(){if (hasUpgrade("d", 14) ||inChallenge("p", 11) ) return true}            // Returns a bool for if this layer's node should be visible in the tree.
 })
