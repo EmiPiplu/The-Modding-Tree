@@ -12,11 +12,15 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.3",
-	name: "Duality",
+	num: "0.4",
+	name: "Pantheon",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+	<h3>v0.4</h3><br>
+	- 2 New layers.<br>
+	- Retrieved Challenges from the shark pits. was hell to patch them up from being eaten.<br>
+	- Removed the shark pool as there is nothing to feed them.<br>
 	<h3>v0.3</h3><br>
 	- More Upgrades.<br>
 	- There is actually something to do now.<br>
@@ -55,9 +59,13 @@ function getPointGen() {
 	let gain = new ExpantaNum(1)
 	
 	if (hasUpgrade("f", 11)) gain = gain.plus(1)
+	if (hasChallenge("p", 11)) gain = gain.plus(1)
 	if (hasUpgrade("f", 12)) gain = gain.mul(upgradeEffect("f", 12))
 	if (hasUpgrade("f", 14)) gain = gain.mul(upgradeEffect("f", 14))
 	gain = gain.mul(buyableEffect("f", 12))
+	if (hasUpgrade("d", 13)) gain = gain.mul(upgradeEffect("d", 13))
+
+	if (inChallenge("p", 11)) gain = gain.sqrt()
 
 	return gain
 }

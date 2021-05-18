@@ -433,7 +433,6 @@ var interval = setInterval(function() {
 	updateWidth()
 	updateTabFormats()
 	gameLoop(diff)
-	fixNaNs()
 	adjustPopupTime(trueDiff)
 	updateParticles(trueDiff)
 	ticking = false
