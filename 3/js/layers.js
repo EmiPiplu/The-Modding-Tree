@@ -1,6 +1,6 @@
 addLayer("f", {
     name: "Faith", // This is optional, only used in a few places, If absent it just uses the layer id.
-    symbol: "f", // This appears on the layer's node. Default is the id with the first letter capitalized
+    symbol: "F", // This appears on the layer's node. Default is the id with the first letter capitalized
     position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
     startData() { return {
         unlocked: true,
@@ -18,6 +18,7 @@ addLayer("f", {
         if (hasUpgrade("f", 13)) mult = mult.mul(upgradeEffect("f", 13))
         if (hasUpgrade("f", 15)) mult = mult.mul(upgradeEffect("f", 15))
         mult = mult.mul(buyableEffect("f", 11))
+        mult = mult.mul(tmp.d.effect)
         return mult
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -129,6 +130,18 @@ addLayer("f", {
             },
             effectDisplay() { return "+"+ format(this.effect()) }, 
         },
+        23: {
+            title: "Recruitment",
+            description: 'Unlock a new Layer',
+            cost: new ExpantaNum(1e130),
+            onPurchase() {
+                player.points = player.points.sub(this.cost)
+            },
+            unlocked() {
+                return hasUpgrade("f", 22)
+            },
+           
+        },
     },
 
     buyables: {
@@ -210,4 +223,111 @@ addLayer("f", {
 
     
     layerShown(){return true}
+})
+
+addLayer("d", {
+    name: "Devotees", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "D", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: 1, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    startData() { return {
+        unlocked: true,
+		points: new ExpantaNum(0),
+        DevoteeGains: new ExpantaNum(11),
+    }},
+    color: "#FFFF00",
+    requires: new ExpantaNum(10), // Can be a function that takes requirement increases into account
+    resource: "Devotees", // Name of prestige currency
+    baseResource: "DevoteeGains", // Name of resource prestige is based on
+    baseAmount() {return player.d.DevoteeGains}, // Get the current amount of baseResource
+    type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    exponent: 0.5, // Prestige currency exponent
+    gainMult() { // Calculate the multiplier for main currency from bonuses
+        mult = new ExpantaNum(1)
+        if(hasUpgrade("f", 23)) mult = mult.mul(upgradeEffect("d", 12))
+        return mult
+    },
+    gainExp() { // Calculate the exponent on main currency from bonuses
+        return new ExpantaNum(1)
+    },
+    row: 0, // Row the layer is in on the tree (0 is the first row)
+    effect(){
+        let eff = player.d.points.sqrt().add(1)
+        return eff
+    },
+    effectDescription() {
+        let desc = "which boost Faith gain by "+ format(this.effect())
+        
+        return desc
+    },
+
+    update(diff) {
+        if (hasUpgrade("d", 11)) generatePoints("d", diff);
+
+
+    },
+    
+
+    upgrades: {
+        rows: 5,
+        cols: 5,
+        11: {
+            title: "Fresh Meat",
+            description: "Begin Recruiting Devotees",
+            cost: new ExpantaNum(0),
+            onPurchase() {
+                player.points = player.d.points.sub(this.cost)
+            }
+        },
+        12: {
+            title: "Multi Level Marketing",
+            description: "Pseople go out and find more people who in turn find more people. Result:Profit ",
+            cost: new ExpantaNum(15),
+            onPurchase() {
+                player.points = player.points.sub(this.cost)
+            },
+            effect() { // Calculate bonuses from the upgrade. Can return a single value or an object with multiple values
+                let ret = player.d.points.sqrt().add(1)
+                if(ret < 1) ret = 1
+                return ret;
+            },
+            effectDisplay() { return format(this.effect())+"x" }, 
+        },
+        12: {
+            title: "Divine Training",
+            description: "Something about divinity",
+            cost: new ExpantaNum(15),
+            onPurchase() {
+                player.points = player.points.sub(this.cost)
+            },
+            effect() { // Calculate bonuses from the upgrade. Can return a single value or an object with multiple values
+                let ret = player.d.points.sqrt().add(1)
+                if(ret < 1) ret = 1
+                return ret;
+            },
+            effectDisplay() { return format(this.effect())+"x" }, 
+        },
+    },
+
+    buyables: {
+        rows: 1,
+        cols: 2,
+        
+    },
+    
+    
+    infoboxes: {
+        Devotion: {
+          title: "Recruitment",
+          body: `If one person praying alone can make the gods hear you like this. who knows the power they would be willing to lend us if there are lots of people doing it. Also gives a headstart
+          when you finally ascend to godhood yourself`
+          },
+    
+        },
+
+    tabFormat: {
+        "Faith": { content: ["main-display", ["infobox", "Devotion",], "milestones", "upgrades", "buyables", "challenges"] },
+    },
+
+    
+    layerShown(){return hasUpgrade("f", 23)}
 })

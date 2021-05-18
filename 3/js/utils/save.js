@@ -20,9 +20,10 @@ function startPlayerBase() {
 		hasNaN: false,
 		hideChallenges: false,
 		showStory: true,
+		forceOneTab: false,
 		points: modInfo.initialStartPoints,
 		subtabs: {},
-		lastSafeTab: (layoutInfo.showTree ? "none" : layoutInfo.startTab)
+		lastSafeTab: (readData(layoutInfo.showTree) ? "none" : layoutInfo.startTab)
 	};
 }
 function getStartPlayer() {
@@ -73,14 +74,15 @@ function getStartLayerData(layer) {
 		layerdata.resetTime = 0;
 
 	layerdata.buyables = getStartBuyables(layer);
-	if (layerdata.noRespecConfirm === undefined) layerdata.noRespecConfirm = false
 	if (layerdata.clickables == undefined)
 		layerdata.clickables = getStartClickables(layer);
 	layerdata.spentOnBuyables = new ExpantaNum(0);
 	layerdata.upgrades = [];
 	layerdata.milestones = [];
+	layerdata.lastMilestone = null;
 	layerdata.achievements = [];
 	layerdata.challenges = getStartChallenges(layer);
+	layerdata.grid = getStartGrid(layer);
 	return layerdata;
 }
 function getStartBuyables(layer) {
@@ -131,6 +133,19 @@ function fixSave() {
 					player.subtabs[layer][item] = Object.keys(layers[layer].microtabs[item])[0];
 		}
 	}
+}
+function getStartGrid(layer) {
+	let data = {};
+	if (! layers[layer].grid) return data
+	if (layers[layer].grid.maxRows === undefined) layers[layer].grid.maxRows=layers[layer].grid.rows
+	if (layers[layer].grid.maxCols === undefined) layers[layer].grid.maxCols=layers[layer].grid.cols
+
+	for (let y = 1; y <= layers[layer].grid.maxRows; y++) {
+		for (let x = 1; x <= layers[layer].grid.maxCols; x++) {
+			data[100*y + x] = layers[layer].grid.getStartData(100*y + x)
+		}
+	}
+	return data;
 }
 function fixData(defaultData, newData) {
 	for (item in defaultData) {
@@ -193,6 +208,7 @@ function load() {
 	setupTemp();
 	updateTemp();
 	updateTemp();
+	updateTabFormats();
 	loadVue();
 }
 function setupModInfo() {
