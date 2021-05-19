@@ -372,14 +372,21 @@ addLayer("p", {
     row: 2,
     position: 1,                                 // The row this layer is on (0 is the first row).
 
-    baseResource: "Divinity",                 // The name of the resource your prestige gain is based on.
     baseAmount() { return player.points },  // A function to return the current amount of baseResource.
 
-    requires: new ExpantaNum(10),              // The amount of the base needed to  gain 1 of the prestige currency.
-                                            // Also the amount required to unlock the layer.
+
 
     type: "custom",                         // Determines the formula used for calculating prestige currency.
-    exponent: 0.5,                          // "normal" prestige gain is (currency^exponent).
+
+    getResetGain() {
+        return new ExpantaNum(0)
+},
+    getNextAt(){
+        return new ExpantaNum(0)
+},
+    canReset(){
+        return false
+    },
 
     challenges: {
         11: {
