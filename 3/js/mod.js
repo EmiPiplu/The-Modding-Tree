@@ -12,11 +12,15 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.4",
-	name: "Pantheon",
+	num: "0.4.1",
+	name: "I'm not dead yet.",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+	<h3>v0.4.1</h3><br>
+	- A single upgrade.<br>
+	- Slapped the developer back into TMT development <br>
+	- Cleaned out some nuclear waste.<br>
 	<h3>v0.4</h3><br>
 	- 2 New layers.<br>
 	- Retrieved Challenges from the shark pits. was hell to patch them up from being eaten.<br>
