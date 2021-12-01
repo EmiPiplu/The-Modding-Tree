@@ -1,19 +1,20 @@
 let modInfo = {
-	name: "The Matter Tree",
+	name: "The ??? Tree",
 	id: "mymod",
-	author: "EmiPiplu",
-	pointsName: "Instabilities",
+	author: "nobody",
+	pointsName: "points",
+	modFiles: ["layers.js", "tree.js"],
+
 	discordName: "",
 	discordLink: "",
 	initialStartPoints: new Decimal (10), // Used for hard resets and new players
-	
 	offlineLimit: 1,  // In hours
 }
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.32",
-	name: "Oh god i broke everything",
+	num: "0.0",
+	name: "Literally nothing",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
@@ -42,14 +43,6 @@ function getPointGen() {
 		return new Decimal(0)
 
 	let gain = new Decimal(1)
-	if(hasUpgrade("ss", 11)) gain = gain.mul(2)
-	if(hasUpgrade("ss", 12)) gain = gain.mul(upgradeEffect("ss", 12))
-	if(hasUpgrade("ss", 21)) gain = gain.mul(2)
-	if(hasUpgrade("ss", 22)) gain = gain.pow(1.2)
-	if(hasUpgrade("ss", 23)) gain = gain.mul(upgradeEffect("ss", 23))
-	if(hasUpgrade("ss", 33)) gain = gain.mul(2)
-	gain = gain.mul(tmp.um.effect)
-	gain = gain.mul(buyableEffect("ss", 11))
 	return gain
 }
 
@@ -69,6 +62,11 @@ function isEndgame() {
 
 
 // Less important things beyond this point!
+
+// Style for the background, can be a function
+var backgroundStyle = {
+
+}
 
 // You can change this if you have things that can be messed up by long tick lengths
 function maxTickLength() {
