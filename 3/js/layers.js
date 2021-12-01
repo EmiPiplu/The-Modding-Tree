@@ -340,7 +340,7 @@ addLayer("d", {
         15: {
             title: "Duality Shrines",
             description: "Build shrines around the sun and moon altars ",
-            cost: new ExpantaNum(10000),
+            cost: new ExpantaNum(100000),
             onPurchase() {
                 player.points = player.points.sub(this.cost)
                 
