@@ -19,15 +19,29 @@ addLayer("f", {
         if (hasUpgrade("f", 15)) mult = mult.mul(upgradeEffect("f", 15))
         mult = mult.mul(buyableEffect("f", 11))
         mult = mult.mul(tmp.d.effect)
+        if (inChallenge("p", 12) || hasChallenge("p", 12)) mult.pow(upgradeEffect("f", 21).add(upgradeEffect("f", 22).add(1)))
+    
         return mult
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
-        return new ExpantaNum(1)
+        exp = new ExpantaNum(1)
+        if (inChallenge("p", 12) || hasChallenge("p", 12)) exp = exp.add(upgradeEffect("f", 22).div(70))
+        if (inChallenge("p", 12) || hasChallenge("p", 12)) exp = exp.add(upgradeEffect("f", 21).div(70))
+        return exp
+        
     },
     row: 0, // Row the layer is in on the tree (0 is the first row)
-    hotkeys: [
-        {key: "p", description: "P: Reset for prestige points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
-    ],
+    passiveGeneration(){
+        if (hasMilestone("p", 1)) return 0.01
+    },
+    
+    doReset(resettingLayer) {
+        let keep = [];
+        if (hasMilestone("p", 0) && resettingLayer=="p") keep.push("upgrades")
+
+       
+        if (layers[resettingLayer].row > this.row) layerDataReset(this.layer, keep)
+    },
 
     upgrades: {
         rows: 5,
@@ -62,9 +76,11 @@ addLayer("f", {
                 player.points = player.points.sub(this.cost)
             },
             effect() { // Calculate bonuses from the upgrade. Can return a single value or an object with multiple values
+                let cap = new ExpantaNum("1e2000")
+                if(hasUpgrade("d", 21)) cap = new ExpantaNum("1e2100")
                 let ret = player.f.points.sqrt().div(3).add(1)
                 if (inChallenge("p", 11) || hasChallenge("p", 11)) ret = ret.pow(1.5)
-                if (ret.gte("1e2000")) ret = "1e2000" 
+                if (ret.gte(cap)) ret = cap 
                 if(ret < 1) ret = 1
                 return ret;
             },
@@ -110,7 +126,7 @@ addLayer("f", {
             },
             effect() { // Calculate bonuses from the upgrade. Can return a single value or an object with multiple values
                 let cap = new ExpantaNum(1)
-                if (hasUpgrade("d", 15)) cap = cap.add(1)
+                if (hasUpgrade("d", 15)) cap = cap.add(2)
                 let ret = getBuyableAmount("f", 11).div(100)
                 if (ret > cap) ret = cap
                 
@@ -131,7 +147,7 @@ addLayer("f", {
             },
             effect() { // Calculate bonuses from the upgrade. Can return a single value or an object with multiple values
                 let cap = new ExpantaNum(1)
-                if (hasUpgrade("d", 15)) cap = cap.add(1)
+                if (hasUpgrade("d", 15)) cap = cap.add(2)
                 let ret = getBuyableAmount("f", 12).div(100)
                 if (ret > cap) ret = cap
                 if (!hasUpgrade("f", 22)) ret = 0
@@ -151,6 +167,30 @@ addLayer("f", {
             },
            
         },
+        24: {
+            title: "Reflection of Tuena",
+            description: 'Decrease the dark research cost base by 2',
+            cost: new ExpantaNum("1e2800"),
+            onPurchase() {
+                player.points = player.points.sub(this.cost)
+            },
+            unlocked() {
+                return hasUpgrade("d", 15)
+            },
+           
+        },
+        25: {
+            title: "Shine of Rudon",
+            description: 'Decrease the light research cost base by 2',
+            cost: new ExpantaNum("1e2985"),
+            onPurchase() {
+                player.points = player.points.sub(this.cost)
+            },
+            unlocked() {
+                return hasUpgrade("d", 15)
+            },
+           
+        },
     },
 
     buyables: {
@@ -160,10 +200,12 @@ addLayer("f", {
             title: "Light Research",
             cost() {
                 let base = new ExpantaNum(10)
+                if (buyableEffect("f", 11) > 1e100) base = base.add(5)
+                if (hasUpgrade("f", 25)) base = base.sub(2)
                 let cost = new ExpantaNum(base).pow(getBuyableAmount(this.layer, this.id).add(1))
                 if (buyableEffect("f", 11) > 1e20) cost = cost.pow(3)
                 if (buyableEffect("f", 11) > 1e60) cost = cost.pow(3)
-                if (buyableEffect("f", 11) > 1e100) cost = cost.pow(3)
+                
                 return cost
             },
             display() {
@@ -178,12 +220,13 @@ addLayer("f", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             unlocked() {
-                return hasUpgrade("f", 15)
+                return hasUpgrade("f", 15) 
             },
             effect() {
                 let base = new ExpantaNum(1.5)
                 if (hasUpgrade("f", 21)) base = base.add(upgradeEffect("f", 21))
                 let eff = base.pow(getBuyableAmount(this.layer, this.id))
+                if(inChallenge("p", 12)) eff = 1
                 return eff
             },
         },
@@ -191,10 +234,12 @@ addLayer("f", {
             title: "Dark Research",
             cost() {
                 let base = new ExpantaNum(20)
+                if (buyableEffect("f", 12) > 1e100) base = base.add(5)
+                if (hasUpgrade("f", 24)) base = base.sub(2)
                 let cost = new ExpantaNum(base).pow(getBuyableAmount(this.layer, this.id).add(1))
                 if (buyableEffect("f", 12) > 1e20) cost = cost.pow(3)
                 if (buyableEffect("f", 12) > 1e60) cost = cost.pow(3)
-                if (buyableEffect("f", 12) > 1e100) cost = cost.pow(3)
+                
                 return cost
             },
             display() {
@@ -215,6 +260,7 @@ addLayer("f", {
                 let base = new ExpantaNum(2)
                 if (hasUpgrade("f", 22)) base = base.add(upgradeEffect("f", 22))
                 let eff = base.pow(getBuyableAmount(this.layer, this.id))
+                if(inChallenge("p", 12)) eff = 1
                 return eff
             },
         },
@@ -260,6 +306,8 @@ addLayer("d", {
         if(hasUpgrade("d", 12)) mult = mult.mul(2)
         if(hasUpgrade("d", 13)) mult = mult.mul(2)
         if(hasUpgrade("d", 14)) mult = mult.mul(3)
+        if(hasUpgrade("d", 15)) mult = mult.mul(2)
+        
         return mult
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -268,6 +316,7 @@ addLayer("d", {
     row: 0, // Row the layer is in on the tree (0 is the first row)
     effect(){
         let eff = player.d.points.sqrt().add(1)
+
         return eff
     },
     effectDescription() {
@@ -339,7 +388,7 @@ addLayer("d", {
         },
         15: {
             title: "Duality Shrines",
-            description: "Build shrines around the sun and moon altars increasing the cap of both by 1",
+            description: "Build shrines around the sun and moon altars increasing the cap of both by 2",
             cost: new ExpantaNum(100000),
             onPurchase() {
                 player.points = player.points.sub(this.cost)
@@ -347,6 +396,18 @@ addLayer("d", {
             },
             unlocked() {
                 return hasChallenge("p", 11)
+            }, 
+        },
+        21: {
+            title: "Bruris's Sacrifice",
+            description: "For every pantheon challenge increase bruris's blessing cap by 1e50",
+            cost: new ExpantaNum(1000000),
+            onPurchase() {
+                player.points = player.points.sub(this.cost)
+                
+            },
+            unlocked() {
+                return hasChallenge("p", 12)
             }, 
         },
     },
@@ -417,6 +478,31 @@ addLayer("p", {
 
             },
         },
+        12: {
+            name: "Brola I",
+            challengeDescription: `"It seems that your research is powerful but it goes against our ways. Show me your power without it and i can grant you my power." Both research buyables
+            are disabled but upgrades affecting them also affect faith exponent`,
+            goal: new ExpantaNum("1e1500"),
+            rewardDescription: "Faith exponent boost is kept outside of the challenge.",
+            onComplete(){
+                player.p.points = player.p.points.add(1)
+
+            },
+        },
+    },
+
+    milestones: {
+        0: {
+            requirementDescription: "1 challenge completion (1)",
+            effectDescription: "Keep faith upgrades on entering pantheon challenges.",
+            done() { return player.p.points.gte(1) }
+        },
+        1: {
+            requirementDescription: "2 challenge completions (2)",
+            effectDescription: "Gain 1% of faith gain per second",
+            done() { return player.p.points.gte(1) }
+        },
+        
     },
 
     infoboxes: {
@@ -434,5 +520,5 @@ addLayer("p", {
 
 
 
-    layerShown(){if (hasUpgrade("d", 14) ||inChallenge("p", 11) ) return true}            // Returns a bool for if this layer's node should be visible in the tree.
+    layerShown(){if (hasUpgrade("d", 14) || player.p.unlocked) return true}            // Returns a bool for if this layer's node should be visible in the tree.
 })
