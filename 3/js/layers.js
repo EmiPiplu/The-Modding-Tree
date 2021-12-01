@@ -500,7 +500,7 @@ addLayer("p", {
         1: {
             requirementDescription: "2 challenge completions (2)",
             effectDescription: "Gain 1% of faith gain per second",
-            done() { return player.p.points.gte(1) }
+            done() { return player.p.points.gte(2) }
         },
         
     },
