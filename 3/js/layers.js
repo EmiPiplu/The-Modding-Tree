@@ -109,8 +109,11 @@ addLayer("f", {
                 return hasUpgrade("f", 15)
             },
             effect() { // Calculate bonuses from the upgrade. Can return a single value or an object with multiple values
+                let cap = new ExpantaNum(1)
+                if (hasUpgrade("d", 15)) cap = cap.add(1)
                 let ret = getBuyableAmount("f", 11).div(100)
-                if (ret > 1) ret = 1
+                if (ret > cap) ret = cap
+                
                 if (!hasUpgrade("f", 21)) ret = 0
                 return ret;
             },
@@ -127,8 +130,10 @@ addLayer("f", {
                 return hasUpgrade("f", 15)
             },
             effect() { // Calculate bonuses from the upgrade. Can return a single value or an object with multiple values
+                let cap = new ExpantaNum(1)
+                if (hasUpgrade("d", 15)) cap = cap.add(1)
                 let ret = getBuyableAmount("f", 12).div(100)
-                if (ret > 1) ret = 1
+                if (ret > cap) ret = cap
                 if (!hasUpgrade("f", 22)) ret = 0
                 return ret;
             },
@@ -330,6 +335,18 @@ addLayer("d", {
             },
             unlocked() {
                 return hasUpgrade("d", 13)
+            }, 
+        },
+        15: {
+            title: "Duality Shrines",
+            description: "Build shrines around the sun and moon altars ",
+            cost: new ExpantaNum(500),
+            onPurchase() {
+                player.points = player.points.sub(this.cost)
+                
+            },
+            unlocked() {
+                return hasChallenge("p", 11)
             }, 
         },
     },
