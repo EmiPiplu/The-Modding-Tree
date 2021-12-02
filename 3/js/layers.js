@@ -292,6 +292,7 @@ addLayer("d", {
         unlocked: true,
 		points: new ExpantaNum(0),
         DevoteeGains: new ExpantaNum(11),
+        Influence: new ExpantaNum(0),
     }},
     color: "#FFFF00",
     requires: new ExpantaNum(10), // Can be a function that takes requirement increases into account
@@ -307,6 +308,7 @@ addLayer("d", {
         if(hasUpgrade("d", 13)) mult = mult.mul(2)
         if(hasUpgrade("d", 14)) mult = mult.mul(3)
         if(hasUpgrade("d", 15)) mult = mult.mul(2)
+        if(hasUpgrade("d", 21)) mult = mult.mul(2)
         
         return mult
     },
@@ -327,7 +329,7 @@ addLayer("d", {
 
     update(diff) {
         if (hasUpgrade("d", 11)) generatePoints("d", diff);
-
+        if (player.d.points.gte(5000000)) player.d.points = new ExpantaNum(5000000)
 
     },
     
@@ -412,9 +414,20 @@ addLayer("d", {
         },
     },
 
-    buyables: {
-        rows: 1,
-        cols: 2,
+
+
+    milestones: {
+        0: {
+            requirementDescription: "5,000,000 Devotees",
+            effectDescription: "Unlock influence",
+            done() { return player.d.points.gte(5000000) }
+        },
+        1: {
+            requirementDescription: "Convert the world.",
+            effectDescription: "Unlock ???",
+            done() { return player.d.points.gte(7.9e9) }
+        },
+
         
     },
     
@@ -430,7 +443,7 @@ addLayer("d", {
         },
 
     tabFormat: {
-        "Faith": { content: ["main-display", ["infobox", "Devotion",], "milestones", "upgrades", "buyables", "challenges"] },
+        "Faith": { content: ["main-display", ["infobox", "Devotion",], "milestones", "upgrades", "challenges"] },
     },
 
     
@@ -478,20 +491,7 @@ addLayer("p", {
 
             },
         },
-        12: {
-            name: "Brola I",
-            challengeDescription: `"It seems that your research is powerful but it goes against our ways. Show me your power without it and i can grant you my power." Both research buyables
-            are disabled but upgrades affecting them also affect faith exponent`,
-            goal: new ExpantaNum("1e1500"),
-            rewardDescription: "Faith exponent boost is kept outside of the challenge.",
-            onComplete(){
-                player.p.points = player.p.points.add(1)
-
-            },
-        },
-    },
-
-    milestones: {
+        12: {milestones: {
         0: {
             requirementDescription: "1 challenge completion (1)",
             effectDescription: "Keep faith upgrades on entering pantheon challenges.",
@@ -504,6 +504,19 @@ addLayer("p", {
         },
         
     },
+            name: "Brola I",
+            challengeDescription: `"It seems that your research is powerful but it goes against our ways. Show me your power without it and i can grant you my power." Both research buyables
+            are disabled but upgrades affecting them also affect faith exponent`,
+            goal: new ExpantaNum("1e1500"),
+            rewardDescription: "Faith exponent boost is kept outside of the challenge.",
+            onComplete(){
+                player.p.points = player.p.points.add(1)
+
+            },
+        },
+    },
+
+    
 
     infoboxes: {
         Pantheon: {
@@ -522,3 +535,5 @@ addLayer("p", {
 
     layerShown(){if (hasUpgrade("d", 14) || player.p.unlocked) return true}            // Returns a bool for if this layer's node should be visible in the tree.
 })
+
+
