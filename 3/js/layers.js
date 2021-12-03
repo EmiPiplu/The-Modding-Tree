@@ -16,17 +16,23 @@ addLayer("f", {
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new ExpantaNum(1)
         if (hasUpgrade("f", 13)) mult = mult.mul(upgradeEffect("f", 13))
-        if (hasUpgrade("f", 15)) mult = mult.mul(upgradeEffect("f", 15))
+        if (hasUpgrade("f", 15)) mult = mult.mul(upgradeEffect("f", 15)) 
         mult = mult.mul(buyableEffect("f", 11))
         mult = mult.mul(tmp.d.effect)
-        if (inChallenge("p", 12) || hasChallenge("p", 12)) mult.pow(upgradeEffect("f", 21).add(upgradeEffect("f", 22).add(1)))
+        let temp = new ExpantaNum(1)
+        temp = temp.add(upgradeEffect("f", 21))
+        temp = temp.add(upgradeEffect("f", 22))
+        if (inChallenge("p", 12) || hasChallenge("p", 12)) mult.pow(temp)
+       
     
         return mult
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
         exp = new ExpantaNum(1)
-        if (inChallenge("p", 12) || hasChallenge("p", 12)) exp = exp.add(upgradeEffect("f", 22).div(70))
-        if (inChallenge("p", 12) || hasChallenge("p", 12)) exp = exp.add(upgradeEffect("f", 21).div(70))
+        c12boost = new ExpantaNum(upgradeEffect("f", 22))
+        c12boost = c12boost.add(upgradeEffect("f", 21)).div(70)
+        exp =  exp.add(c12boost)
+        
         return exp
         
     },
@@ -447,7 +453,7 @@ addLayer("d", {
     },
 
     
-    layerShown(){return hasUpgrade("f", 23)}
+    layerShown(){return hasUpgrade("f", 23) || player.p.points.gte(1)}
 })
 
 addLayer("p", {
@@ -462,8 +468,9 @@ addLayer("p", {
     resource: "Completions",            // The name of this layer's main prestige resource.
     row: 2,
     position: 1,                                 // The row this layer is on (0 is the first row).
+    requires: new ExpantaNum(10),  
 
-    baseAmount() { return player.points },  // A function to return the current amount of baseResource.
+    baseAmount() { return player.d.points },  // A function to return the current amount of baseResource.
 
 
 
@@ -479,6 +486,19 @@ addLayer("p", {
         return false
     },
 
+    milestones: {
+        0: {
+            requirementDescription: "1 challenge completion (1)",
+            effectDescription: "Keep faith upgrades on entering pantheon challenges.",
+            done() { return player.p.points.gte(1) }
+        },
+        1: {
+            requirementDescription: "2 challenge completions (2)",
+            effectDescription: "Gain 1% of faith gain per second",
+            done() { return player.p.points.gte(2) }
+        },
+    },
+
     challenges: {
         11: {
             name: "Bruris I",
@@ -490,20 +510,9 @@ addLayer("p", {
                 player.p.points = player.p.points.add(1)
 
             },
+            
         },
-        12: {milestones: {
-        0: {
-            requirementDescription: "1 challenge completion (1)",
-            effectDescription: "Keep faith upgrades on entering pantheon challenges.",
-            done() { return player.p.points.gte(1) }
-        },
-        1: {
-            requirementDescription: "2 challenge completions (2)",
-            effectDescription: "Gain 1% of faith gain per second",
-            done() { return player.p.points.gte(2) }
-        },
-        
-    },
+        12: {
             name: "Brola I",
             challengeDescription: `"It seems that your research is powerful but it goes against our ways. Show me your power without it and i can grant you my power." Both research buyables
             are disabled but upgrades affecting them also affect faith exponent`,
@@ -512,6 +521,9 @@ addLayer("p", {
             onComplete(){
                 player.p.points = player.p.points.add(1)
 
+            },
+            unlocked(){
+                return player.f.points.gte("1e3000") || inChallenge("p", 12) || hasChallenge("p", 12)
             },
         },
     },
@@ -533,7 +545,7 @@ addLayer("p", {
 
 
 
-    layerShown(){if (hasUpgrade("d", 14) || player.p.unlocked) return true}            // Returns a bool for if this layer's node should be visible in the tree.
+    layerShown(){if (hasUpgrade("d", 14) || player.p.points.gte(1)) return true}            // Returns a bool for if this layer's node should be visible in the tree.
 })
 
 
