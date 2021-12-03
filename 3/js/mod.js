@@ -12,11 +12,15 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.5",
-	name: "Pantheon Expansion",
+	num: "0.5.1",
+	name: "Return to Monke",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+	h3>v0.5.1</h3><br>
+	- Bugfixes<br>
+	- Bugfixing those bugfixes <br>
+	- Pain<br>
 	h3>v0.5</h3><br>
 	- More upgrades<br>
 	- A new challenge <br>
